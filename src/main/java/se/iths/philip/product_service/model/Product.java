@@ -19,4 +19,7 @@ public class Product {
     private String description;
     private BigDecimal price;
     private int stock;
+
+    @Enumerated(EnumType.STRING)
+    private VatClass vatClass;
 }
