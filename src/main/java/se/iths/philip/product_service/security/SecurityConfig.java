@@ -29,7 +29,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/products/stock/decrease")
                         .hasAnyRole("ADMIN", "USER")
 
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                                .authenticated()
+//                                .permitAll()
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> {}));
