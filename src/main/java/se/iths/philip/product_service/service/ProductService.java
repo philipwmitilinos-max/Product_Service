@@ -9,8 +9,10 @@ import se.iths.philip.product_service.dto.ProductStockRequest;
 import se.iths.philip.product_service.exception.InsufficientStockException;
 import se.iths.philip.product_service.exception.ProductNotFoundException;
 import se.iths.philip.product_service.model.Product;
+import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.repository.ProductRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -27,6 +29,9 @@ public class ProductService {
         product.setDescription(dto.description());
         product.setPrice(dto.price());
         product.setStock(dto.stock());
+        product.setVatClass(
+                determineVatClass(dto.price())
+        );
 
         Product savedProduct = repository.save(product);
 
@@ -97,6 +102,19 @@ public class ProductService {
         return products.stream()
                 .map(this::mapToResponseDto)
                 .toList();
+    }
+
+    private VatClass determineVatClass(BigDecimal price) {
+
+        if (price.compareTo(BigDecimal.valueOf(100)) < 0) {
+            return VatClass.VAT_6;
+        }
+
+        if (price.compareTo(BigDecimal.valueOf(500)) < 0) {
+            return VatClass.VAT_12;
+        }
+
+        return VatClass.VAT_25;
     }
 
     private ProductResponseDTO mapToResponseDto(Product product) {
