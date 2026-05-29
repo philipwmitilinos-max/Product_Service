@@ -34,6 +34,13 @@ public class ProductController {
         return service.getAllProducts();
     }
 
+    @GetMapping("/{id}")
+    public ProductResponseDTO getProductById(
+            @PathVariable Long id) {
+
+        return service.getProductById(id);
+    }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteProduct(@PathVariable Long id) {
