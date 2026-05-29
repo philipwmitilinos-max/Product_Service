@@ -161,6 +161,20 @@ class ProductControllerTest {
     }
 
     @Test
+    void getProductByIdShouldReturn200() throws Exception {
+
+        ProductResponseDTO product = responseDTO;
+
+        when(service.getProductById(any()))
+                .thenReturn(product);
+
+        mockMvc.perform(get("/products/1")
+                        .with(jwt().authorities(() -> "ROLE_USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Keyboard"));
+    }
+
+    @Test
     void deleteProductShouldReturn204() throws Exception {
 
         mockMvc.perform(delete("/products/1")
