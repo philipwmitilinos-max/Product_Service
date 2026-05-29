@@ -5,14 +5,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
-import se.iths.philip.product_service.dto.ProductStockRequest;
+import se.iths.philip.product_service.dto.OrderItemRequest;
 import se.iths.philip.product_service.exception.InsufficientStockException;
 import se.iths.philip.product_service.exception.ProductNotFoundException;
 import se.iths.philip.product_service.model.Product;
 import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.repository.ProductRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -67,7 +66,7 @@ public class ProductService {
 
     @Transactional
     public List<ProductResponseDTO> decreaseStock(
-            List<ProductStockRequest> requests
+            List<OrderItemRequest> requests
     ) {
         List<Product> products = requests.stream()
                 .map(request -> repository.findById(request.productId())
@@ -81,7 +80,7 @@ public class ProductService {
 
         for (int i = 0; i < requests.size(); i++) {
             Product product = products.get(i);
-            ProductStockRequest request = requests.get(i);
+            OrderItemRequest request = requests.get(i);
 
             if (product.getStock() < request.quantity()) {
                 throw new InsufficientStockException("Insufficient stock: "
@@ -92,7 +91,7 @@ public class ProductService {
         for (int i = 0; i < requests.size(); i++) {
 
             Product product = products.get(i);
-            ProductStockRequest request = requests.get(i);
+            OrderItemRequest request = requests.get(i);
 
             product.setStock(product.getStock() - request.quantity());
         }
@@ -109,7 +108,7 @@ public class ProductService {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStock()
-        );
+                product.getStock(),
+                VatClass.VAT_25);
     }
 }

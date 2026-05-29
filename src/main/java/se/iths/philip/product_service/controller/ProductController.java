@@ -3,16 +3,18 @@ package se.iths.philip.product_service.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
-import se.iths.philip.product_service.dto.ProductStockRequest;
+import se.iths.philip.product_service.dto.OrderItemRequest;
 import se.iths.philip.product_service.service.ProductService;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/products")
+@Validated
 @RequiredArgsConstructor
 public class ProductController {
 
@@ -40,7 +42,7 @@ public class ProductController {
 
     @PostMapping("/stock/decrease")
     public List<ProductResponseDTO> decreaseStock(
-            @RequestBody List<ProductStockRequest> requests) {
+            @RequestBody List<@Valid OrderItemRequest> requests) {
         return service.decreaseStock(requests);
     }
 }
