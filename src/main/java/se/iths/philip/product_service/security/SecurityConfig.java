@@ -5,12 +5,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.DefaultSecurityFilterChain;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 public class SecurityConfig {
 
     @Bean
-    public DefaultSecurityFilterChain securityFilterChain(
+    public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
 
         http.csrf(csrf -> csrf.disable())
@@ -23,7 +24,7 @@ public class SecurityConfig {
                                 "/products/**")
                         .hasRole("ADMIN")
 
-                        .requestMatchers(HttpMethod.GET, "/products/**")
+                        .requestMatchers(HttpMethod.GET, "/products", "/products/**")
                         .hasAnyRole("ADMIN", "USER")
 
                         .requestMatchers(HttpMethod.POST, "/products/stock/decrease")
@@ -31,7 +32,7 @@ public class SecurityConfig {
 
                         .anyRequest()
                                 .authenticated()
-//                                .permitAll()
+
                 )
                 .oauth2ResourceServer(oauth2 ->
                         oauth2.jwt(jwt -> {}));
