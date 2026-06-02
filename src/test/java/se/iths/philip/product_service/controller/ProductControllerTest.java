@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import se.iths.philip.product_service.dto.OrderItemRequest;
 import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
+import se.iths.philip.product_service.exception.InsufficientStockException;
+import se.iths.philip.product_service.exception.ProductNotFoundException;
 import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.service.ProductService;
 import tools.jackson.databind.ObjectMapper;
@@ -23,8 +25,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -77,6 +78,7 @@ class ProductControllerTest {
         );
     }
 
+    // CREATE PRODUCTS
     @Test
     @WithMockUser(roles = "ADMIN")
     void createProductShouldReturn201() throws Exception {
@@ -146,6 +148,7 @@ class ProductControllerTest {
         verify(service).createProduct(any());
     }
 
+    // HÄMTAR ALLA PRODUCTS
     @Test
     void getAllProductsShouldReturn200() throws Exception {
 
@@ -161,6 +164,26 @@ class ProductControllerTest {
     }
 
     @Test
+    void getAllProductsShouldReturnEmptyList() throws Exception {
+
+        when(service.getAllProducts())
+                .thenReturn(List.of());
+
+        mockMvc.perform(get("/products")
+                .with(jwt().authorities(() -> "ROLE_USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(0));
+    }
+
+    @Test
+    void getAllProductsShouldReturn401WithoutJwt() throws Exception {
+
+        mockMvc.perform(get("/products"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // HÄMTAR PRODUCTS MED ID
+    @Test
     void getProductByIdShouldReturn200() throws Exception {
 
         ProductResponseDTO product = responseDTO;
@@ -174,6 +197,29 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").value("Keyboard"));
     }
 
+    @Test
+    void getProductByIdShouldReturn404() throws Exception {
+
+        when(service.getProductById(99L))
+                .thenThrow(
+                        new ProductNotFoundException(
+                                "Product with id 99 not found"
+                        )
+                );
+
+        mockMvc.perform(get("/products/99")
+                .with(jwt().authorities(() -> "ROLE_USER")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getProductByIdShouldReturn401WithoutJwt() throws Exception {
+
+        mockMvc.perform(get("/products/1"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // DELETE PRODUCTS
     @Test
     void deleteProductShouldReturn204() throws Exception {
 
@@ -192,6 +238,28 @@ class ProductControllerTest {
                 .andExpect(status().isForbidden());
     }
 
+    @Test
+    void deleteProductShouldReturn404() throws Exception {
+
+        doThrow(new ProductNotFoundException(
+                "Product with id 99 not found"))
+                .when(service)
+                .deleteProduct(99L);
+
+        mockMvc.perform(delete("/products/99")
+                .with(jwt().authorities(
+                        () -> "ROLE_ADMIN")))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteProductShouldReturn401WithoutJwt() throws Exception {
+
+        mockMvc.perform(delete("/products/99"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    // DECREASE STOCK
     @Test
     void decreaseStockShouldReturn200() throws Exception {
 
@@ -224,5 +292,67 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requests)))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void decreaseStockShouldReturn404() throws Exception {
+
+        List<OrderItemRequest> requests = List.of(new OrderItemRequest(
+                99L,
+                2));
+
+        when(service.decreaseStock(any()))
+                .thenThrow(
+                        new ProductNotFoundException(
+                                "Product with id 99 not found"));
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .with(jwt().authorities(() -> "ROLE_ADMIN"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void decreaseStockShouldReturn400ForInsufficientStock() throws Exception {
+
+        List<OrderItemRequest> requests = List.of(new OrderItemRequest(
+                1L,
+                999));
+
+        when(service.decreaseStock(any()))
+                .thenThrow(new InsufficientStockException("Insufficient stock"));
+
+        mockMvc.perform(post("/products/stock/decrease")
+        .with(jwt().authorities(() -> "ROLE_ADMIN"))
+        .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void decreaseStockShouldReturn401WithoutJwt() throws Exception {
+
+        List<OrderItemRequest> requests = List.of(orderItem);
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void decreaseStockShouldReturn200ForUser() throws Exception {
+
+        List<OrderItemRequest> requests = List.of(orderItem);
+
+        when(service.decreaseStock(any()))
+                .thenReturn(List.of(responseDTO));
+
+        mockMvc.perform(post("/products/stock/decrease")
+                .with(jwt().authorities(() -> "ROLE_USER"))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(requests)))
+                .andExpect(status().isOk());
     }
 }
