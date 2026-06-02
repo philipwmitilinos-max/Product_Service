@@ -9,6 +9,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -51,6 +52,9 @@ class ProductControllerTest {
     private ProductRequestDTO requestDTO;
     private ProductResponseDTO responseDTO;
     private OrderItemRequest orderItem;
+
+    @MockitoBean
+    JwtDecoder jwtDecoder;
 
     @BeforeEach
     void setUp() {
