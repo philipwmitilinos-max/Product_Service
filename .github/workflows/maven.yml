@@ -41,5 +41,5 @@ jobs:
       with:
         context: .
         push: true
-        tags: philipwm/Product_Service:latest
+        tags: philipwm/product-service:latest
 

@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>se.iths.philip</groupId>
-    <artifactId>Product_Service</artifactId>
+    <artifactId>product-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>Product_Service</name>
-    <description>Product_Service</description>
+    <name>product-service</name>
+    <description>product-service</description>
     <url/>
     <licenses>
         <license/>
