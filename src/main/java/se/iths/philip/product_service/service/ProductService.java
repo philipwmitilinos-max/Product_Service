@@ -109,6 +109,6 @@ public class ProductService {
                 product.getDescription(),
                 product.getPrice(),
                 product.getStock(),
-                VatClass.VAT_25);
+                product.getVatClass());
     }
 }
