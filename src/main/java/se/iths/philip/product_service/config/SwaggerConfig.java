@@ -17,7 +17,7 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .info(new Info().title("Swagger Auth Token Example API")
                         .description("Demo for centralized token authentication using Swagger @SecurityRequirement.")
-                        .version("1.0.1"))
+                        .version("1.0.2"))
                 .addSecurityItem(new SecurityRequirement().addList("authorization"))
                 .components(new Components()
                         .addSecuritySchemes("authorization",
