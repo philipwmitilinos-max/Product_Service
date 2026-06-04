@@ -10,7 +10,7 @@
     </parent>
     <groupId>se.iths.philip</groupId>
     <artifactId>product-service</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
     <name>product-service</name>
     <description>product-service</description>
     <url/>
