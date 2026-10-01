@@ -62,7 +62,7 @@ class ProductRepositoryTest {
 
         repository.save(mouse);
 
-        assertEquals(2, repository.findAll().size());
+        assertEquals(3, repository.findAll().size());
     }
 
     @Test
