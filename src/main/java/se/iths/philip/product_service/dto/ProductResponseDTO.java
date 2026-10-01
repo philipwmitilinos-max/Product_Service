@@ -1,7 +1,5 @@
 package se.iths.philip.product_service.dto;
 
-import se.iths.philip.product_service.model.VatClass;
-
 import java.math.BigDecimal;
 
 public record ProductResponseDTO(
@@ -9,6 +7,5 @@ public record ProductResponseDTO(
         String name,
         String description,
         BigDecimal price,
-        int stock,
-        VatClass vatClass) {
+        int stock) {
 }

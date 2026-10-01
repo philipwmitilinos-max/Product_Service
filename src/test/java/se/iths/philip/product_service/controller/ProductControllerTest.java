@@ -18,7 +18,6 @@ import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
 import se.iths.philip.product_service.exception.InsufficientStockException;
 import se.iths.philip.product_service.exception.ProductNotFoundException;
-import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.service.ProductService;
 import tools.jackson.databind.ObjectMapper;
 
@@ -63,8 +62,7 @@ class ProductControllerTest {
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10,
-                VatClass.VAT_25
+                10
         );
 
         responseDTO = new ProductResponseDTO(
@@ -72,8 +70,7 @@ class ProductControllerTest {
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10,
-                VatClass.VAT_25
+                10
         );
 
         orderItem = new OrderItemRequest(
@@ -95,8 +92,7 @@ class ProductControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestDTO)))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.name").value("Keyboard"))
-                .andExpect(jsonPath("$.vatClass").value("VAT_25"));
+                .andExpect(jsonPath("$.name").value("Keyboard"));
     }
 
     @Test
@@ -126,8 +122,7 @@ class ProductControllerTest {
                 "",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10,
-                VatClass.VAT_25
+                10
         );
 
         mockMvc.perform(post("/products")

@@ -10,7 +10,6 @@ import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
 import se.iths.philip.product_service.exception.ProductNotFoundException;
 import se.iths.philip.product_service.model.Product;
-import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.repository.ProductRepository;
 
 import java.math.BigDecimal;
@@ -45,14 +44,12 @@ class ProductServiceTest {
         product.setDescription("Mechanical keyboard");
         product.setPrice(BigDecimal.valueOf(1000));
         product.setStock(10);
-        product.setVatClass(VatClass.VAT_25);
 
         requestDTO = new ProductRequestDTO(
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10,
-                VatClass.VAT_25
+                10
         );
     }
 

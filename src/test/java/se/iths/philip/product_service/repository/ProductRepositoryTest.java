@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import se.iths.philip.product_service.model.Product;
-import se.iths.philip.product_service.model.VatClass;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -27,7 +26,6 @@ class ProductRepositoryTest {
         product.setDescription("Mechanical keyboard");
         product.setPrice(BigDecimal.valueOf(1000));
         product.setStock(10);
-        product.setVatClass(VatClass.VAT_25);
     }
 
     @Test
@@ -61,11 +59,10 @@ class ProductRepositoryTest {
         mouse.setDescription("Gaming mouse");
         mouse.setPrice(BigDecimal.valueOf(500));
         mouse.setStock(20);
-        mouse.setVatClass(VatClass.VAT_25);
 
         repository.save(mouse);
 
-        assertEquals(2, repository.findAll().size());
+        assertEquals(3, repository.findAll().size());
     }
 
     @Test

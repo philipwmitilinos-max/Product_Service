@@ -9,7 +9,6 @@ import se.iths.philip.product_service.dto.OrderItemRequest;
 import se.iths.philip.product_service.exception.InsufficientStockException;
 import se.iths.philip.product_service.exception.ProductNotFoundException;
 import se.iths.philip.product_service.model.Product;
-import se.iths.philip.product_service.model.VatClass;
 import se.iths.philip.product_service.repository.ProductRepository;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class ProductService {
         product.setDescription(dto.description());
         product.setPrice(dto.price());
         product.setStock(dto.stock());
-        product.setVatClass(dto.vatClass());
 
         Product savedProduct = repository.save(product);
 
@@ -108,7 +106,6 @@ public class ProductService {
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStock(),
-                product.getVatClass());
+                product.getStock());
     }
 }
