@@ -18,6 +18,9 @@ public record ProductRequestDTO(
         BigDecimal price,
 
         @PositiveOrZero
-        int stock
+        int stock,
+
+        @NotBlank
+        String category
 ) {
 }

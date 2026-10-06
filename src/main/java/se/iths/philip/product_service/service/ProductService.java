@@ -27,6 +27,7 @@ public class ProductService {
         product.setDescription(dto.description());
         product.setPrice(dto.price());
         product.setStock(dto.stock());
+        product.setCategory(dto.category());
 
         Product savedProduct = repository.save(product);
 
@@ -105,6 +106,7 @@ public class ProductService {
                 product.getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getCategory(),
                 product.getPrice(),
                 product.getStock());
     }
