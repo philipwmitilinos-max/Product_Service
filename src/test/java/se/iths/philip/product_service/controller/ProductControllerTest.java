@@ -4,10 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -62,13 +59,15 @@ class ProductControllerTest {
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10
+                10,
+                "Electronics"
         );
 
         responseDTO = new ProductResponseDTO(
                 1L,
                 "Keyboard",
                 "Mechanical keyboard",
+                "Electronics",
                 BigDecimal.valueOf(1000),
                 10
         );
@@ -122,7 +121,8 @@ class ProductControllerTest {
                 "",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10
+                10,
+                "Electronics"
         );
 
         mockMvc.perform(post("/products")

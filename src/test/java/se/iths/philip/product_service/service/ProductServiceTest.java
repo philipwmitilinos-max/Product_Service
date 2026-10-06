@@ -49,7 +49,8 @@ class ProductServiceTest {
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
-                10
+                10,
+                "Electronics"
         );
     }
 

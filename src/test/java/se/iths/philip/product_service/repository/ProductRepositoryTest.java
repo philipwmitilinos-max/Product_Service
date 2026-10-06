@@ -26,6 +26,7 @@ class ProductRepositoryTest {
         product.setDescription("Mechanical keyboard");
         product.setPrice(BigDecimal.valueOf(1000));
         product.setStock(10);
+        product.setCategory("Electronics");
     }
 
     @Test
@@ -59,6 +60,7 @@ class ProductRepositoryTest {
         mouse.setDescription("Gaming mouse");
         mouse.setPrice(BigDecimal.valueOf(500));
         mouse.setStock(20);
+        mouse.setCategory("Electronics");
 
         repository.save(mouse);
 
