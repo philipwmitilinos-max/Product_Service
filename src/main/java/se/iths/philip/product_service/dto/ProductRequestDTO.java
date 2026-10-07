@@ -19,8 +19,11 @@ public record ProductRequestDTO(
 
         @PositiveOrZero
         int stock,
+        
+        @NotBlank
+        String category,
 
         @NotBlank
-        String category
+        String imageUrl
 ) {
 }
