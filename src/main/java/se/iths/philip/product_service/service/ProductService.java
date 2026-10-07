@@ -27,6 +27,8 @@ public class ProductService {
         product.setDescription(dto.description());
         product.setPrice(dto.price());
         product.setStock(dto.stock());
+        product.setCategory(dto.category());
+        product.setImageUrl(dto.imageUrl());
 
         Product savedProduct = repository.save(product);
 
@@ -101,11 +103,13 @@ public class ProductService {
 
     private ProductResponseDTO mapToResponseDto(Product product) {
 
-        return new ProductResponseDTO(
-                product.getId(),
+        return new ProductResponseDTO
+                (product.getId(),
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getStock());
+                product.getStock(),
+                product.getCategory(),
+                product.getImageUrl());
     }
 }
