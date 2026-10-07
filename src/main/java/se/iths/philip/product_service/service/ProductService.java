@@ -107,6 +107,7 @@ public class ProductService {
                 (product.getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getCategory(),
                 product.getPrice(),
                 product.getStock(),
                 product.getCategory(),
