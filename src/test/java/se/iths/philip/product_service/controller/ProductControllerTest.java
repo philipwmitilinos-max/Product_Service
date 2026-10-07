@@ -60,16 +60,18 @@ class ProductControllerTest {
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
                 10,
-                "Electronics"
+                "Electronics",
+                "https://example.com/keyboard.jpg"
         );
 
         responseDTO = new ProductResponseDTO(
                 1L,
                 "Keyboard",
                 "Mechanical keyboard",
-                "Electronics",
                 BigDecimal.valueOf(1000),
-                10
+                10,
+                "Electronics",
+                "https://example.com/keyboard.jpg"
         );
 
         orderItem = new OrderItemRequest(
@@ -122,7 +124,8 @@ class ProductControllerTest {
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
                 10,
-                "Electronics"
+                "Electronics",
+                "https://example.com/keyboard.jpg"
         );
 
         mockMvc.perform(post("/products")

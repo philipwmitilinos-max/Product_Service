@@ -44,13 +44,16 @@ class ProductServiceTest {
         product.setDescription("Mechanical keyboard");
         product.setPrice(BigDecimal.valueOf(1000));
         product.setStock(10);
+        product.setCategory("Electronics");
+        product.setImageUrl("https://example.com/keyboard.jpg");
 
         requestDTO = new ProductRequestDTO(
                 "Keyboard",
                 "Mechanical keyboard",
                 BigDecimal.valueOf(1000),
                 10,
-                "Electronics"
+                "Electronics",
+                "https://example.com/keyboard.jpg"
         );
     }
 

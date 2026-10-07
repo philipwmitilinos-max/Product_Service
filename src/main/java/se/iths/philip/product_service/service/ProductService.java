@@ -1,7 +1,6 @@
 package se.iths.philip.product_service.service;
 
 import jakarta.transaction.Transactional;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import se.iths.philip.product_service.dto.ProductRequestDTO;
 import se.iths.philip.product_service.dto.ProductResponseDTO;
@@ -14,10 +13,13 @@ import se.iths.philip.product_service.repository.ProductRepository;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class ProductService {
 
     private final ProductRepository repository;
+
+    public ProductService(ProductRepository repository) {
+        this.repository = repository;
+    }
 
     public ProductResponseDTO createProduct(ProductRequestDTO dto) {
 
@@ -107,7 +109,6 @@ public class ProductService {
                 (product.getId(),
                 product.getName(),
                 product.getDescription(),
-                product.getCategory(),
                 product.getPrice(),
                 product.getStock(),
                 product.getCategory(),
