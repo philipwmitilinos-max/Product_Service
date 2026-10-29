@@ -24,20 +24,22 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+// Security configuration for handling JWT tokens and CORS
 public class SecurityConfig {
     private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
+    // Konstruktor för SecurityConfig som tar emot värden från application.properties
     @Bean
     public JwtAuthenticationConverter jwtAuthenticationConverter() {
         JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
-
+        //konverterar JWT-roller till Spring Securitys GrantedAuthority
         converter.setJwtGrantedAuthoritiesConverter(jwt -> {
             List<String> roles = jwt.getClaimAsStringList("roles");
 
             if (roles == null) {
                 return List.of();
             }
-
+            // Mappar roller till GrantedAuthority och lägger till prefixet "ROLE_" om det inte redan finns
             return roles.stream()
                     .map(role -> {
                         // Spring Security's hasRole("X") checks for authority "ROLE_X",
@@ -50,11 +52,11 @@ public class SecurityConfig {
 
         return converter;
     }
-
+    // Bean för att konfigurera säkerhetsfilterkedjan
     @Bean
     public SecurityFilterChain securityFilterChain(
             HttpSecurity http) throws Exception {
-
+        // Konfigurera säkerhetsfilterkedjan för att hantera CORS, CSRF, auktorisering och JWT-resursserver
         http
                 .cors(cors -> {})
                 .csrf(csrf -> csrf.disable())
@@ -85,16 +87,18 @@ public class SecurityConfig {
         return http.build();
     }
 
+    // Bean för att konfigurera CORS
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
+        // Tillåtna ursprung för CORS
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:5173",
                 "http://localhost:5174",
                 "http://localhost:5175"
         ));
-
+        // Tillåtna HTTP-metoder för CORS
         configuration.setAllowedMethods(List.of(
                 "GET",
                 "POST",
@@ -102,9 +106,10 @@ public class SecurityConfig {
                 "DELETE",
                 "OPTIONS"
         ));
-
+        // Tillåtna headers för CORS
         configuration.setAllowedHeaders(List.of("*"));
-
+        // Tillåtna credentials för CORS
+        configuration.setAllowCredentials(true);
         UrlBasedCorsConfigurationSource source =
                 new UrlBasedCorsConfigurationSource();
 
@@ -112,7 +117,7 @@ public class SecurityConfig {
 
         return source;
     }
-
+    // Bean för att skapa en JwtDecoder som dekrypterar och validerar JWT
     @Bean
     public JwtDecoder jwtDecoder(
             @Value("${spring.security.oauth2.resourceserver.jwt.jwk-set-uri}")
@@ -122,6 +127,7 @@ public class SecurityConfig {
             @Value("${spring.security.oauth2.resourceserver.jwt.accepted-issuers:}")
             String acceptedIssuers) {
 
+        // Skapar en NimbusJwtDecoder med JWK-set URI
         NimbusJwtDecoder nimbusDecoder = NimbusJwtDecoder
                 .withJwkSetUri(jwkSetUri)
                 .build();
@@ -132,6 +138,7 @@ public class SecurityConfig {
 
         // Build a set of acceptable issuers. If 'acceptedIssuers' is provided
         // (comma separated) we use those in addition to the configured issuerUri.
+        // Normaliserar string med att ändra stor till liten bokstav och tar bort eventuella snedstreck i slutet.
         java.util.Set<String> expectedSet = new java.util.HashSet<>();
         if (acceptedIssuers != null && !acceptedIssuers.isBlank()) {
             for (String s : acceptedIssuers.split(",")) {
@@ -142,13 +149,13 @@ public class SecurityConfig {
                 }
             }
         }
-
+        // Lägg till issuerUri i expectedSet om det inte är null eller blank
         if (issuerUri != null && !issuerUri.isBlank()) {
             String u = issuerUri.trim();
             while (u.endsWith("/")) u = u.substring(0, u.length() - 1);
             expectedSet.add(u.toLowerCase());
         }
-
+        // validator för att kontrollera att iss-claim i JWT matchar någon av de förväntade issuers
         org.springframework.security.oauth2.core.OAuth2TokenValidator<org.springframework.security.oauth2.jwt.Jwt> issuerValidator = token -> {
             String tokenIssuer = token.getClaimAsString("iss");
             if (tokenIssuer == null) {
@@ -161,19 +168,20 @@ public class SecurityConfig {
             if (expectedSet.contains(tokenIssuer.toLowerCase())) {
                 return org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.success();
             }
-
+            // Returnerar ett fel om iss-claim inte matchar någon av de förväntade issuers
             return org.springframework.security.oauth2.core.OAuth2TokenValidatorResult.failure(
                     new org.springframework.security.oauth2.core.OAuth2Error("invalid_token", "The iss claim is not valid", null)
             );
         };
-
+        // Kombinerar default validators med issuer validator
         var delegating = new org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator<>(defaultValidators, issuerValidator);
         nimbusDecoder.setJwtValidator(delegating);
-
+        // Returnerar en JwtDecoder som loggar token-detaljer vid dekryptering
         // Return wrapper that logs token details
         return new JwtDecoder() {
             @Override
             public Jwt decode(String token) {
+                // loggar token-detaljer vid dekryptering
                 try {
                     Jwt jwt = nimbusDecoder.decode(token);
                     logger.warn("JWT Token decoded successfully");
