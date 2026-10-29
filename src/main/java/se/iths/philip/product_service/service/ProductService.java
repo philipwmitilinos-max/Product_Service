@@ -20,7 +20,7 @@ public class ProductService {
     public ProductService(ProductRepository repository) {
         this.repository = repository;
     }
-
+    // Metod för att skapa en ny produkt baserat på ProductRequestDTO
     public ProductResponseDTO createProduct(ProductRequestDTO dto) {
 
         Product product = new Product();
@@ -36,7 +36,7 @@ public class ProductService {
 
         return mapToResponseDto(savedProduct);
     }
-
+    // Metod för att uppdatera en befintlig produkt baserat på dess ID och ProductRequestDTO
     public List<ProductResponseDTO> getAllProducts() {
 
         return repository.findAll()
@@ -44,7 +44,7 @@ public class ProductService {
                 .map(this::mapToResponseDto)
                 .toList();
     }
-
+    // Metod för att hämta en produkt baserat på dess ID
     public ProductResponseDTO getProductById(Long id) {
 
         Product product = repository.findById(id)
@@ -56,6 +56,7 @@ public class ProductService {
         return mapToResponseDto(product);
     }
 
+    // Metod för att ta bort en produkt baserat på dess ID
     public void deleteProduct(Long id) {
 
         if (!repository.existsById(id)) {
@@ -65,7 +66,8 @@ public class ProductService {
 
         repository.deleteById(id);
     }
-
+    // Metod för att uppdatera en befintlig produkt baserat på dess ID och ProductRequestDTO
+    //transactional används för att säkerställa att alla ändringar i databasen sker som en enhetlig operation
     @Transactional
     public List<ProductResponseDTO> decreaseStock(
             List<OrderItemRequest> requests
@@ -79,7 +81,7 @@ public class ProductService {
                                         + " not found"
                                 )))
                 .toList();
-
+        // Kontrollera om det finns tillräckligt med lager för varje produkt
         for (int i = 0; i < requests.size(); i++) {
             Product product = products.get(i);
             OrderItemRequest request = requests.get(i);
@@ -90,6 +92,7 @@ public class ProductService {
             }
         }
 
+        // Minska lager för varje produkt
         for (int i = 0; i < requests.size(); i++) {
 
             Product product = products.get(i);
@@ -97,12 +100,12 @@ public class ProductService {
 
             product.setStock(product.getStock() - request.quantity());
         }
-
+        // Spara ändringarna i databasen
         return products.stream()
                 .map(this::mapToResponseDto)
                 .toList();
     }
-
+        // Metod för att mappa en Product-entitet till en ProductResponseDTO
     private ProductResponseDTO mapToResponseDto(Product product) {
 
         return new ProductResponseDTO

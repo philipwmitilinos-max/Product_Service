@@ -9,12 +9,15 @@ import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// Konfiguration för Swagger/OpenAPI-dokumentation och säkerhetsinställningar
 @Configuration
 public class SwaggerConfig {
 
+    // Bean som skapar en OpenAPI-instans med information om API:t och säkerhetskrav
     @Bean
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
+                // Lägg till information om API:t, inklusive titel, beskrivning och version
                 .info(new Info().title("Swagger Auth Token Example API")
                         .description("Demo for centralized token authentication using Swagger @SecurityRequirement.")
                         .version("1.0.4"))
@@ -30,6 +33,7 @@ public class SwaggerConfig {
                                         .description("JWT auth description")));
     }
 
+    // Bean som skapar en GroupedOpenApi-instans för att gruppera API-endpoints
     @Bean
     public GroupedOpenApi publicApi() {
         return GroupedOpenApi.builder()
